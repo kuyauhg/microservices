@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: "optional:nacos:hm-service.yaml"
+
+hm:
+  db:
+    host: 127.0.0.1:3307
+    pw: 123456
+  nacos:
+    addr: 127.0.0.1:8848
+    namespace: dev

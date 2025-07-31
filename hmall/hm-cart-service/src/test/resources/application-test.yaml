@@ -1,0 +1,37 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: hm-cart-service
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      mode: always
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+  global-config:
+    db-config:
+      update-strategy: NOT_NULL
+      id-type: auto
+logging:
+  level:
+    "[com.hmall.cart]": debug
+    "[org.springframework.cloud]": debug
+  pattern:
+    dateformat: HH:mm:ss:SSS

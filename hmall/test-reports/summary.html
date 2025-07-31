@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>微服务测试报告</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background-color: #f0f0f0; padding: 20px; border-radius: 5px; }
+        .success { color: green; }
+        .failure { color: red; }
+        .module { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>微服务重构测试报告</h1>
+        <p>生成时间: Thu Jul 31 14:14:45 CST 2025</p>
+    </div>
+    
+    <h2>测试结果概览</h2>
+    <ul>
+        <li>总测试模块数: 3</li>
+        <li class="success">通过模块数: 1</li>
+        <li class="failure">失败模块数: 2</li>
+    </ul>
+    
+    <h2>各模块测试结果</h2>
+    <div class="module">
+        <h3>商品管理服务 (hm-product-service)</h3>
+        <p class="success">
+            ✓ 测试通过
+        </p>
+    </div>
+    
+    <div class="module">
+        <h3>购物车服务 (hm-cart-service)</h3>
+        <p class="failure">
+            ✗ 测试失败
+        </p>
+    </div>
+    
+    <div class="module">
+        <h3>主服务 (hm-service)</h3>
+        <p class="failure">
+            ✗ 测试失败
+        </p>
+    </div>
+</body>
+</html>

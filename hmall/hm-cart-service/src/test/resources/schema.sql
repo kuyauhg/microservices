@@ -1,0 +1,13 @@
+-- 购物车表 (适配H2数据库)
+CREATE TABLE IF NOT EXISTS cart (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '购物车条目id',
+    user_id BIGINT NOT NULL COMMENT '用户id',
+    item_id BIGINT NOT NULL COMMENT 'sku商品id',
+    num INT NOT NULL DEFAULT 1 COMMENT '购买数量',
+    name VARCHAR(256) NOT NULL COMMENT '商品标题',
+    spec VARCHAR(1024) DEFAULT NULL COMMENT '商品动态属性键值集',
+    price INT NOT NULL COMMENT '价格,单位：分',
+    image VARCHAR(256) DEFAULT '' COMMENT '商品图片',
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
+);

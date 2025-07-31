@@ -1,0 +1,17 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: hm-trade-service
+  profiles:
+    active: local
+  config:
+    import: "optional:nacos:hm-trade-service.properties"
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        namespace: dev
+      config:
+        namespace: dev
+        file-extension: properties
