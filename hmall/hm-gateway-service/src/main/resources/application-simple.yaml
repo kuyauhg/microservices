@@ -1,0 +1,68 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: hm-gateway-service
+  main:
+    allow-bean-definition-overriding: true
+  config:
+    import: "optional:nacos:"
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: dev
+      config:
+        import-check:
+          enabled: false
+    gateway:
+      # 路由配置
+      routes:
+        # 用户服务路由
+        - id: hm-user-service
+          uri: lb://hm-user-service
+          predicates:
+            - Path=/users/**,/addresses/**
+        
+        # 商品服务路由
+        - id: hm-product-service
+          uri: lb://hm-product-service
+          predicates:
+            - Path=/items/**
+        
+        # 购物车服务路由
+        - id: hm-cart-service
+          uri: lb://hm-cart-service
+          predicates:
+            - Path=/carts/**
+        
+        # 交易服务路由
+        - id: hm-trade-service
+          uri: lb://hm-trade-service
+          predicates:
+            - Path=/orders/**
+        
+        # 支付服务路由
+        - id: hm-pay-service
+          uri: lb://hm-pay-service
+          predicates:
+            - Path=/pay-orders/**
+
+# 监控端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.hmall.gateway: debug
+    org.springframework.cloud.gateway: debug

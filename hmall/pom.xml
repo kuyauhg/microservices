@@ -10,6 +10,7 @@
     <version>1.0.0</version>
     <modules>
         <module>hm-common</module>
+        <module>hm-gateway-service</module>
         <module>hm-product-service</module>
         <module>hm-cart-service</module>
         <module>hm-user-service</module>

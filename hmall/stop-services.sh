@@ -48,6 +48,7 @@ stop_service "交易服务" "logs/trade-service.pid"
 stop_service "购物车服务" "logs/cart-service.pid"
 stop_service "商品管理服务" "logs/product-service.pid"
 stop_service "用户服务" "logs/user-service.pid"
+stop_service "API网关服务" "logs/gateway-service.pid"
 
 # 额外检查并停止可能遗留的Java进程
 echo ""

@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: hm-gateway-service
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+    gateway:
+      routes:
+        # 测试路由
+        - id: test-service
+          uri: http://httpbin.org
+          predicates:
+            - Path=/test/**
+          filters:
+            - StripPrefix=1
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 
+    database: 0
+
+# 测试环境JWT配置
+hm:
+  jwt:
+    location: classpath:test-hmall.jks
+    alias: hmall
+    password: hmall123
+    tokenTTL: 30m
+  auth:
+    excludePaths:
+      - /test/**
+      - /actuator/**
+
+# 日志配置
+logging:
+  level:
+    com.hmall.gateway: debug
+    org.springframework.cloud.gateway: debug
+  pattern:
+    dateformat: HH:mm:ss:SSS
+
+# 监控端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,metrics
+  endpoint:
+    health:
+      show-details: always

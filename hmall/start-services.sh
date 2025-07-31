@@ -48,6 +48,17 @@ cd ..
 # 等待用户服务启动
 sleep 10
 
+# 启动网关服务 (端口: 8080)
+echo "启动API网关服务 (hm-gateway-service) - 端口: 8080"
+cd hm-gateway-service
+nohup mvn spring-boot:run -Dspring-boot.run.profiles=local > ../logs/gateway-service.log 2>&1 &
+GATEWAY_PID=$!
+echo "网关服务 PID: $GATEWAY_PID"
+cd ..
+
+# 等待网关服务启动
+sleep 15
+
 # 启动商品服务 (端口: 8081)
 echo "启动商品管理服务 (hm-product-service) - 端口: 8081"
 cd hm-product-service
@@ -99,6 +110,7 @@ echo "$PAY_PID" > logs/pay-service.pid
 echo ""
 echo "所有服务启动完成！"
 echo "服务信息:"
+echo "- API网关服务: http://localhost:8080 (PID: $GATEWAY_PID)"
 echo "- 用户服务: http://localhost:8083 (PID: $USER_PID)"
 echo "- 商品管理服务: http://localhost:8081 (PID: $PRODUCT_PID)"
 echo "- 购物车服务: http://localhost:8082 (PID: $CART_PID)"
@@ -106,6 +118,7 @@ echo "- 交易服务: http://localhost:8084 (PID: $TRADE_PID)"
 echo "- 支付服务: http://localhost:8085 (PID: $PAY_PID)"
 echo ""
 echo "日志文件位置:"
+echo "- 网关服务日志: logs/gateway-service.log"
 echo "- 用户服务日志: logs/user-service.log"
 echo "- 商品服务日志: logs/product-service.log"
 echo "- 购物车服务日志: logs/cart-service.log"
@@ -119,6 +132,13 @@ sleep 60
 
 # 检查服务健康状态
 echo "检查服务健康状态..."
+
+# 检查网关服务
+if curl -s http://localhost:8080/actuator/health > /dev/null 2>&1; then
+    echo "✓ 网关服务 (8080) - 运行正常"
+else
+    echo "✗ 网关服务 (8080) - 可能未正常启动，请查看 logs/gateway-service.log"
+fi
 
 # 检查用户服务
 if curl -s http://localhost:8083/actuator/health > /dev/null 2>&1; then
@@ -159,6 +179,9 @@ echo ""
 echo "微服务启动脚本执行完成！"
 echo ""
 echo "🚀 所有服务已启动，可以开始使用："
+echo "   - API网关: http://localhost:8080 (统一入口)"
+echo "   - 网关监控: http://localhost:8080/actuator/health"
+echo "   - 路由信息: http://localhost:8080/actuator/gateway/routes"
 echo "   - API文档: http://localhost:8081/doc.html (商品服务)"
 echo "   - API文档: http://localhost:8082/doc.html (购物车服务)"
 echo "   - API文档: http://localhost:8083/doc.html (用户服务)"

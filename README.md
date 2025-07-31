@@ -132,6 +132,7 @@ cd hmall
 
 | 服务名称 | 端口 | 描述 | API文档 |
 |---------|------|------|---------|
+| **hm-gateway-service** | **8080** | **API网关服务** | **http://localhost:8080/actuator** |
 | hm-user-service | 8083 | 用户管理服务 | http://localhost:8083/doc.html |
 | hm-product-service | 8081 | 商品管理服务 | http://localhost:8081/doc.html |
 | hm-cart-service | 8082 | 购物车服务 | http://localhost:8082/doc.html |
@@ -222,12 +223,14 @@ hmall/
 │   │   ├── config/         # 通用配置类
 │   │   └── advice/         # 全局异常处理
 │   └── pom.xml
+├── hm-gateway-service/     # API网关服务 - 统一入口、路由、认证、限流
 ├── hm-user-service/        # 用户服务 - 用户管理、认证
 ├── hm-product-service/     # 商品服务 - 商品管理、库存
 ├── hm-cart-service/        # 购物车服务 - 购物车管理
 ├── hm-trade-service/       # 交易服务 - 订单管理
 ├── hm-pay-service/         # 支付服务 - 支付处理
 ├── start-services.sh       # 启动所有服务脚本
+├── start-gateway.sh        # 单独启动网关服务脚本
 ├── stop-services.sh        # 停止所有服务脚本
 ├── run-tests.sh           # 运行测试脚本
 └── pom.xml                # 父级POM文件
