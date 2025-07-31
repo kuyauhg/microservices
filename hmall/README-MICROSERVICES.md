@@ -4,9 +4,12 @@
 
 本项目将原有的单体电商应用重构为微服务架构，主要拆分出以下服务：
 
-- **hm-product-service (商品管理服务)** - 端口: 8081
-- **hm-cart-service (购物车服务)** - 端口: 8082  
-- **hm-service (主服务)** - 端口: 8080，包含订单管理、用户管理、支付等功能
+- **hm-user-service (用户服务)** - 端口: 8083，负责用户管理和认证
+- **hm-product-service (商品管理服务)** - 端口: 8081，负责商品和库存管理
+- **hm-cart-service (购物车服务)** - 端口: 8082，负责购物车管理
+- **hm-trade-service (交易服务)** - 端口: 8084，负责订单管理
+- **hm-pay-service (支付服务)** - 端口: 8085，负责支付处理
+- **hm-common (公共模块)** - 提供通用工具类和配置
 
 ## 技术栈
 
@@ -23,9 +26,11 @@
 ```
 hmall/
 ├── hm-common/              # 公共模块
+├── hm-user-service/        # 用户服务
 ├── hm-product-service/     # 商品管理服务
 ├── hm-cart-service/        # 购物车服务
-├── hm-service/             # 主服务
+├── hm-trade-service/       # 交易服务
+├── hm-pay-service/         # 支付服务
 ├── start-services.sh       # 启动所有服务脚本
 ├── stop-services.sh        # 停止所有服务脚本
 ├── run-tests.sh           # 运行测试脚本
@@ -34,7 +39,7 @@ hmall/
 
 ## 数据库配置
 
-项目使用三个独立的数据库：
+项目使用五个独立的数据库：
 
 - **hmall** - 主服务数据库（订单、用户、支付等）
 - **hm-item** - 商品服务数据库
@@ -80,9 +85,11 @@ hm:
 ```
 
 该脚本会按顺序启动：
-1. 商品管理服务 (端口: 8081)
-2. 购物车服务 (端口: 8082)
-3. 主服务 (端口: 8080)
+1. 用户服务 (端口: 8083)
+2. 商品管理服务 (端口: 8081)
+3. 购物车服务 (端口: 8082)
+4. 交易服务 (端口: 8084)
+5. 支付服务 (端口: 8085)
 
 ### 4. 停止服务
 
@@ -100,6 +107,13 @@ hm:
 
 ## 服务接口
 
+### 用户服务 (hm-user-service:8083)
+
+- `POST /users/login` - 用户登录
+- `POST /users/register` - 用户注册
+- `GET /users/me` - 获取当前用户信息
+- `PUT /users/money/deduct` - 扣减用户余额
+
 ### 商品管理服务 (hm-product-service:8081)
 
 - `GET /items` - 根据ID批量查询商品
@@ -115,11 +129,18 @@ hm:
 - `DELETE /carts/{id}` - 删除购物车商品
 - `DELETE /carts` - 批量删除购物车商品
 
-### 主服务 (hm-service:8080)
+### 交易服务 (hm-trade-service:8084)
 
-- 订单管理相关接口
-- 用户管理相关接口
-- 支付相关接口
+- `POST /orders` - 创建订单
+- `GET /orders/{id}` - 根据ID查询订单
+- `PUT /orders/{id}` - 标记订单已支付
+- `GET /orders/page` - 分页查询订单
+
+### 支付服务 (hm-pay-service:8085)
+
+- `POST /pay-orders` - 生成支付单
+- `POST /pay-orders/{id}` - 尝试余额支付
+- `GET /pay-orders/{id}` - 查询支付单状态
 
 ## 服务间通信
 
@@ -131,7 +152,7 @@ hm:
 public interface ItemClient {
     @GetMapping("/items")
     List<ItemDTO> queryItemByIds(@RequestParam("ids") Collection<Long> ids);
-    
+
     @PutMapping("/items/stock/deduct")
     void deductStock(@RequestBody List<OrderDetailDTO> items);
 }
@@ -143,6 +164,15 @@ public interface ItemClient {
 public interface CartClient {
     @DeleteMapping("/carts")
     void deleteCartItemByIds(@RequestParam("ids") Collection<Long> ids);
+}
+```
+
+### UserClient (用户服务客户端)
+```java
+@FeignClient(name = "hm-user-service")
+public interface UserClient {
+    @PutMapping("/users/money/deduct")
+    void deductMoney(@RequestParam("pw") String pw, @RequestParam("amount") Integer amount);
 }
 ```
 

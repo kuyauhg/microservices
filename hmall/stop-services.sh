@@ -42,17 +42,19 @@ stop_service() {
     fi
 }
 
-# 停止所有服务
-stop_service "主服务" "logs/main-service.pid"
+# 停止所有服务 (按相反顺序停止，避免依赖问题)
+stop_service "支付服务" "logs/pay-service.pid"
+stop_service "交易服务" "logs/trade-service.pid"
 stop_service "购物车服务" "logs/cart-service.pid"
 stop_service "商品管理服务" "logs/product-service.pid"
+stop_service "用户服务" "logs/user-service.pid"
 
 # 额外检查并停止可能遗留的Java进程
 echo ""
 echo "检查是否有遗留的服务进程..."
 
 # 查找可能的Spring Boot应用进程
-SPRING_PIDS=$(ps aux | grep -E "(hm-product-service|hm-cart-service|hm-service)" | grep -v grep | awk '{print $2}')
+SPRING_PIDS=$(ps aux | grep -E "(hm-user-service|hm-product-service|hm-cart-service|hm-trade-service|hm-pay-service)" | grep -v grep | awk '{print $2}')
 
 if [ -n "$SPRING_PIDS" ]; then
     echo "发现遗留的服务进程，正在清理..."
@@ -60,11 +62,11 @@ if [ -n "$SPRING_PIDS" ]; then
         echo "停止进程 PID: $pid"
         kill $pid 2>/dev/null
     done
-    
+
     sleep 3
-    
+
     # 强制停止仍在运行的进程
-    REMAINING_PIDS=$(ps aux | grep -E "(hm-product-service|hm-cart-service|hm-service)" | grep -v grep | awk '{print $2}')
+    REMAINING_PIDS=$(ps aux | grep -E "(hm-user-service|hm-product-service|hm-cart-service|hm-trade-service|hm-pay-service)" | grep -v grep | awk '{print $2}')
     if [ -n "$REMAINING_PIDS" ]; then
         echo "强制停止遗留进程..."
         for pid in $REMAINING_PIDS; do
@@ -80,9 +82,9 @@ echo "所有微服务已停止！"
 # 显示端口占用情况
 echo ""
 echo "检查端口占用情况:"
-for port in 8080 8081 8082; do
+for port in 8081 8082 8083 8084 8085; do
     if lsof -i :$port > /dev/null 2>&1; then
-        echo "端口 $port 仍被占用:"
+        echo "⚠️  端口 $port 仍被占用:"
         lsof -i :$port
     else
         echo "✓ 端口 $port 已释放"
