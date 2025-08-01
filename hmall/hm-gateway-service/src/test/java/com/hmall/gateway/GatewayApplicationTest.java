@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
  * 
  * @author hmall
  */
-@SpringBootTest
+@SpringBootTest(classes = SimpleGatewayApplication.class)
 @ActiveProfiles("test")
 class GatewayApplicationTest {
     
